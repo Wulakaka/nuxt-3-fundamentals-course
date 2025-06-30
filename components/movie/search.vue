@@ -1,7 +1,10 @@
-<script setup lang="ts">
-const query = ref("");
+<script setup>
+const query = ref("batman");
 const apiKey = "e46ce174";
 const movies = ref([]);
+
+search();
+
 async function search() {
   const {Search} = await $fetch(
     `http://www.omdbapi.com/?apikey=${apiKey}&s=${query.value}`

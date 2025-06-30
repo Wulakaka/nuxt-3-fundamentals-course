@@ -1,7 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-  <MovieSearch />
+  <div>
+    <MovieSearch />
+  </div>
 </template>
 
 <style scoped></style>
