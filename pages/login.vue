@@ -3,10 +3,10 @@ definePageMeta({
   layout: "plain",
 });
 
-const isLoggedIn = useIsLoggedIn();
+const user = useUser();
 
 function login() {
-  isLoggedIn.value = true;
+  user.isLoggedIn = true;
   useRouter().push("/");
 }
 </script>
