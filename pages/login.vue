@@ -4,17 +4,12 @@ definePageMeta({
 });
 
 const user = useUser();
-
-function login() {
-  user.isLoggedIn = true;
-  useRouter().push("/");
-}
 </script>
 
 <template>
   <div>
     <h1>Page: login</h1>
-    <form @submit.prevent="login">
+    <form @submit.prevent="user.login">
       <label>
         <span>Username</span>
         <input type="text" name="username" placeholder="Enter your username" />

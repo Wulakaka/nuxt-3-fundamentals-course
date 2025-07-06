@@ -1,25 +1,24 @@
 <script setup lang="ts">
-const list = new Array(40).fill(null).map((_, i) => ({
-  id: i + 1,
-  color: `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`,
-}));
+const count = 40;
 
+const list = new Array(count).fill(null).map((_, i) => ({
+  id: i + 1,
+  color: `hsl(${Math.floor((i / count) * 360)}, 100%, 40%)`,
+}));
 definePageMeta({
   layout: "plain",
 });
 </script>
 
 <template>
-  <div
-    class="grid grid-cols-[repeat(8,1fr)] grid-rows-5 gap-4 p-4 h-[100vh] text-white"
-  >
+  <div class="grid grid-cols-[repeat(8,1fr)] gap-4 h-[100vh] text-white">
     <div
       v-for="item in list"
       :key="item.id"
-      class="text-[30px] flex items-center justify-center rounded-lg"
-      :style="{backgroundColor: item.color}"
+      class="text-[40px] flex items-center justify-center rounded-lg border-2 border-white border-dashed bg-[var(--color)] box-border"
+      :style="{'--color': item.color}"
     >
-      {{ item.id }}
+      {{ 41 - item.id }}
     </div>
   </div>
 </template>
