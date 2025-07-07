@@ -9,15 +9,16 @@ import {
 } from "@floating-ui/vue";
 
 const reference = ref(null);
+const reference2 = ref(null);
 const floating = ref(null);
 const floatingArrow = ref(null);
 const visible = ref(true);
 const count = ref(0);
-const toggle = () => {
+const add = () => {
   // visible.value = !visible.value;
   count.value++;
 };
-const {floatingStyles, middlewareData, placement} = useFloating(
+const {floatingStyles, middlewareData, placement, x, y} = useFloating(
   reference,
   floating,
   {
@@ -43,7 +44,7 @@ const staticSide = computed(
 );
 
 watchEffect(() => {
-  console.log("placement", placement.value);
+  console.log(x.value, y.value);
 });
 
 definePageMeta({
@@ -58,9 +59,16 @@ definePageMeta({
         <button
           ref="reference"
           class="px-4 rounded-2xl border border-solid border-violet-500"
-          @click="toggle"
+          @click="add"
         >
           Button
+        </button>
+        <button
+          ref="reference2"
+          class="px-4 rounded-2xl border border-solid border-violet-600"
+          @click="add"
+        >
+          Button2
         </button>
         <div
           v-if="visible"
