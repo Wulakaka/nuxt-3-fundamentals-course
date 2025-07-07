@@ -23,7 +23,7 @@ export default defineNuxtConfig({
     dirs: ["stores"],
   },
   routeRules: {
-    "/swr": {swr: true},
+    "/swr": {swr: 60},
     "/static": {static: true},
     "/spa": {ssr: false},
   },
