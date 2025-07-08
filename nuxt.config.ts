@@ -22,6 +22,9 @@ export default defineNuxtConfig({
   imports: {
     dirs: ["stores"],
   },
+  image: {
+    domains: ["m.media-amazon.com"],
+  },
   routeRules: {
     "/swr": {swr: 60},
     "/static": {static: true},

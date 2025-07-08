@@ -22,7 +22,12 @@ async function search() {
     <ul style="list-style: none; display: flex; flex-wrap: wrap; gap: 10px">
       <li v-for="movie in movies" :key="movie.imdbID">
         <NuxtLink :to="{name: 'movies-id', params: {id: movie.imdbID}}">
-          <img :src="movie.Poster" :alt="movie.title" />
+          <NuxtImg
+            :src="movie.Poster"
+            :alt="movie.title"
+            width="200"
+            loading="lazy"
+          />
         </NuxtLink>
       </li>
     </ul>
