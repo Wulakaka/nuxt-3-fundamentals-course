@@ -1,17 +1,17 @@
-export interface useCycleListConfig {
+export interface useCycleListConfig<T> {
   fallbackIndex?: number;
-  fallbackValue?: any;
+  fallbackValue?: T;
 }
-
-const useCycleListConfigDefaults: useCycleListConfig = {
-  fallbackIndex: undefined,
-  fallbackValue: undefined,
-};
 
 export const useCycleList = <T>(
   list: MaybeRefOrGetter<T[]>,
-  config?: useCycleListConfig
+  config?: useCycleListConfig<T>
 ) => {
+  const useCycleListConfigDefaults: useCycleListConfig<T> = {
+    fallbackIndex: undefined,
+    fallbackValue: undefined,
+  };
+
   const _config = {
     ...useCycleListConfigDefaults,
     ...config,
