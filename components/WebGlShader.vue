@@ -6,6 +6,10 @@ import fragmentShaderSrc from "../shaders/fragment.glsl?raw";
 const canvas = useTemplateRef("el");
 
 let gl, program, animationFrame;
+let uTimeLocation, uMouseLocation;
+
+let mouseX = 0.5,
+  mouseY = 0.5;
 
 onMounted(() => {
   gl = canvas.value?.getContext("webgl2");
@@ -20,6 +24,10 @@ onMounted(() => {
   program = linkProgram(vertexShader, fragmentShader);
   gl.useProgram(program);
 
+  // Get uniform locations
+  uTimeLocation = gl.getUniformLocation(program, "uTime");
+  uMouseLocation = gl.getUniformLocation(program, "uMouse");
+
   // Setup triangle index buffer for vertex.glsl
   const indexLoc = gl.getAttribLocation(program, "index");
   const indexBuffer = gl.createBuffer();
@@ -33,7 +41,12 @@ onMounted(() => {
   window.addEventListener("resize", handleResize);
 
   // Render time!
+  const startTime = Date.now();
   const render = () => {
+    // Update uniforms
+    gl.uniform1f(uTimeLocation, (Date.now() - startTime) / 1000);
+    gl.uniform2f(uMouseLocation, mouseX, mouseY);
+
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -50,6 +63,12 @@ onUnmounted(() => {
     gl.deleteProgram(program);
   }
 });
+
+function handleMouseMove(event) {
+  const rect = canvas.value.getBoundingClientRect();
+  mouseX = (event.clientX - rect.left) / rect.width;
+  mouseY = 1.0 - (event.clientY - rect.top) / rect.height; // Flip Y
+}
 
 function handleResize() {
   const canvasEl = canvas.value;
@@ -84,7 +103,7 @@ function linkProgram(vertexShader, fragmentShader) {
 </script>
 
 <template>
-  <canvas ref="el" />
+  <canvas ref="el" @mousemove="handleMouseMove" />
 </template>
 
 <style scoped>
