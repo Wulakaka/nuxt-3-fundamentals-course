@@ -6,6 +6,8 @@ out vec4 outColor;    // Final output color
 
 uniform float uTime;
 uniform vec2 uMouse;
+uniform float uCircleSize;
+uniform vec3 uCircleColor;
 
 void main() {
   float wave = sin(uTime) * 0.5f + 0.5f;
@@ -13,10 +15,10 @@ void main() {
 
   // Mouse circle
   float dist = distance(uv, uMouse);
-  float circle = dist < 0.1f ? 1.0f : 0.0f;
+  float circle = dist < uCircleSize ? 1.0f : 0.0f;
 
   // Combine base color with circle
-  color = mix(color, vec3(1.0f), circle);
+  color = mix(color, uCircleColor, circle);
 
   outColor = vec4(color, 1.0f); // RGB from UV, full opacity
 }

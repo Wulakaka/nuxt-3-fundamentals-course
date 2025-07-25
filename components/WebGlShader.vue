@@ -3,10 +3,21 @@ import {onMounted, onUnmounted} from "vue";
 import vertexShaderSrc from "../shaders/vertex.glsl?raw";
 import fragmentShaderSrc from "../shaders/fragment.glsl?raw";
 
+const props = defineProps({
+  circleSize: {
+    type: Number,
+    default: 0.1,
+  },
+  circleColor: {
+    type: String,
+    default: "#ffffff",
+  },
+});
+
 const canvas = useTemplateRef("el");
 
 let gl, program, animationFrame;
-let uTimeLocation, uMouseLocation;
+let uTimeLocation, uMouseLocation, uCircleSizeLocation, uCircleColorLocation;
 
 let mouseX = 0.5,
   mouseY = 0.5;
@@ -27,6 +38,8 @@ onMounted(() => {
   // Get uniform locations
   uTimeLocation = gl.getUniformLocation(program, "uTime");
   uMouseLocation = gl.getUniformLocation(program, "uMouse");
+  uCircleSizeLocation = gl.getUniformLocation(program, "uCircleSize");
+  uCircleColorLocation = gl.getUniformLocation(program, "uCircleColor");
 
   // Setup triangle index buffer for vertex.glsl
   const indexLoc = gl.getAttribLocation(program, "index");
@@ -53,8 +66,37 @@ onMounted(() => {
     animationFrame = requestAnimationFrame(render);
   };
 
+  watch(
+    () => props.circleSize,
+    (newSize) => {
+      if (gl && uCircleSizeLocation) {
+        gl.uniform1f(uCircleSizeLocation, newSize);
+      }
+    },
+    {immediate: true}
+  );
+
+  watch(
+    () => props.circleColor,
+    (newColor) => {
+      if (gl && uCircleColorLocation) {
+        const rgb = hexToRgb(newColor);
+        gl.uniform3f(uCircleColorLocation, ...rgb);
+      }
+    },
+    {immediate: true}
+  );
+
   render();
 });
+
+function hexToRgb(hex) {
+  const bigint = parseInt(hex.replace("#", ""), 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return [r / 255, g / 255, b / 255];
+}
 
 onUnmounted(() => {
   cancelAnimationFrame(animationFrame);
@@ -109,7 +151,7 @@ function linkProgram(vertexShader, fragmentShader) {
 <style scoped>
 canvas {
   display: block;
-  width: 100%;
+  width: 60%;
   aspect-ratio: 3/2;
 }
 </style>
