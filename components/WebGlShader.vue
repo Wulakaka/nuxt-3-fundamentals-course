@@ -15,9 +15,12 @@ const props = defineProps({
 });
 
 const canvas = useTemplateRef("el");
+const slotContainer = useTemplateRef("slotContainer");
 
 let gl, program, animationFrame;
 let uTimeLocation, uMouseLocation, uCircleSizeLocation, uCircleColorLocation;
+
+let uTextureLocation, texture;
 
 let mouseX = 0.5,
   mouseY = 0.5;
@@ -40,6 +43,7 @@ onMounted(() => {
   uMouseLocation = gl.getUniformLocation(program, "uMouse");
   uCircleSizeLocation = gl.getUniformLocation(program, "uCircleSize");
   uCircleColorLocation = gl.getUniformLocation(program, "uCircleColor");
+  uTextureLocation = gl.getUniformLocation(program, "uTexture");
 
   // Setup triangle index buffer for vertex.glsl
   const indexLoc = gl.getAttribLocation(program, "index");
@@ -48,6 +52,9 @@ onMounted(() => {
   gl.bufferData(gl.ARRAY_BUFFER, new Int32Array([0, 1, 2]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(indexLoc);
   gl.vertexAttribIPointer(indexLoc, 1, gl.INT, 0, 0);
+
+  // Setup texture from slot content
+  setupTexture();
 
   // Watch the window to resize
   handleResize();
@@ -89,6 +96,31 @@ onMounted(() => {
 
   render();
 });
+
+function setupTexture() {
+  const img = slotContainer.value.querySelector("img");
+  if (!img) return;
+
+  texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+  if (img.complete) {
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+  } else {
+    img.onload = () => {
+      // gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+    };
+  }
+
+  gl.activeTexture(gl.TEXTURE0);
+  gl.uniform1i(uTextureLocation, 0);
+}
 
 function hexToRgb(hex) {
   const bigint = parseInt(hex.replace("#", ""), 16);
@@ -145,7 +177,12 @@ function linkProgram(vertexShader, fragmentShader) {
 </script>
 
 <template>
-  <canvas ref="el" @mousemove="handleMouseMove" />
+  <div>
+    <div ref="slotContainer" style="display: none">
+      <slot />
+    </div>
+    <canvas ref="el" @mousemove="handleMouseMove" />
+  </div>
 </template>
 
 <style scoped>

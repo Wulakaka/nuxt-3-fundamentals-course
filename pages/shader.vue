@@ -19,7 +19,9 @@ const circleColor = ref("#ffffff");
       step="0.01"
     />
     <input v-model="circleColor" type="color" />
-    <WegGlShader :circle-size="circleSize" :circle-color="circleColor" />
+    <WegGlShader :circle-size="circleSize" :circle-color="circleColor">
+      <img src="https://picsum.photos/512" crossorigin="anonymous" />
+    </WegGlShader>
   </div>
 </template>
 
