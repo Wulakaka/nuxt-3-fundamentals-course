@@ -1,5 +1,7 @@
 <script setup>
+import HeroContent from "~/components/HeroContent.vue";
 import WegGlShader from "~/components/WebGlShader.vue";
+
 definePageMeta({
   layout: "plain",
   title: "WebGL2 Shader Example",
@@ -7,6 +9,12 @@ definePageMeta({
 
 const circleSize = ref(0.1);
 const circleColor = ref("#ffffff");
+
+const maskState = ref(0.0);
+
+function handleHoverChange(isHovered) {
+  maskState.value = isHovered ? 1.0 : 0.0;
+}
 </script>
 
 <template>
@@ -19,9 +27,10 @@ const circleColor = ref("#ffffff");
       step="0.01"
     />
     <input v-model="circleColor" type="color" />
-    <WegGlShader :circle-size="circleSize" :circle-color="circleColor">
+    <WegGlShader :mask-state="maskState">
       <img src="https://picsum.photos/512" crossorigin="anonymous" />
     </WegGlShader>
+    <HeroContent @hover-change="handleHoverChange" />
   </div>
 </template>
 

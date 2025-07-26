@@ -4,13 +4,9 @@ import vertexShaderSrc from "../shaders/vertex.glsl?raw";
 import fragmentShaderSrc from "../shaders/fragment.glsl?raw";
 
 const props = defineProps({
-  circleSize: {
+  maskState: {
     type: Number,
-    default: 0.1,
-  },
-  circleColor: {
-    type: String,
-    default: "#ffffff",
+    default: 0.0,
   },
 });
 
@@ -18,7 +14,7 @@ const canvas = useTemplateRef("el");
 const slotContainer = useTemplateRef("slotContainer");
 
 let gl, program, animationFrame;
-let uTimeLocation, uMouseLocation, uCircleSizeLocation, uCircleColorLocation;
+let uTimeLocation, uMouseLocation, uMaskStateLocation;
 
 let uTextureLocation, texture;
 
@@ -41,9 +37,8 @@ onMounted(() => {
   // Get uniform locations
   uTimeLocation = gl.getUniformLocation(program, "uTime");
   uMouseLocation = gl.getUniformLocation(program, "uMouse");
-  uCircleSizeLocation = gl.getUniformLocation(program, "uCircleSize");
-  uCircleColorLocation = gl.getUniformLocation(program, "uCircleColor");
   uTextureLocation = gl.getUniformLocation(program, "uTexture");
+  uMaskStateLocation = gl.getUniformLocation(program, "uMaskState");
 
   // Setup triangle index buffer for vertex.glsl
   const indexLoc = gl.getAttribLocation(program, "index");
@@ -74,21 +69,10 @@ onMounted(() => {
   };
 
   watch(
-    () => props.circleSize,
-    (newSize) => {
-      if (gl && uCircleSizeLocation) {
-        gl.uniform1f(uCircleSizeLocation, newSize);
-      }
-    },
-    {immediate: true}
-  );
-
-  watch(
-    () => props.circleColor,
-    (newColor) => {
-      if (gl && uCircleColorLocation) {
-        const rgb = hexToRgb(newColor);
-        gl.uniform3f(uCircleColorLocation, ...rgb);
+    () => props.maskState,
+    (newValue) => {
+      if (gl && uMaskStateLocation) {
+        gl.uniform1f(uMaskStateLocation, newValue);
       }
     },
     {immediate: true}
