@@ -7,9 +7,6 @@ definePageMeta({
   title: "WebGL2 Shader Example",
 });
 
-const circleSize = ref(0.1);
-const circleColor = ref("#ffffff");
-
 const maskState = ref(0.0);
 
 function handleHoverChange(isHovered) {
@@ -19,18 +16,13 @@ function handleHoverChange(isHovered) {
 
 <template>
   <div>
-    <input
-      v-model.number="circleSize"
-      type="range"
-      min="0.01"
-      max="0.5"
-      step="0.01"
-    />
-    <input v-model="circleColor" type="color" />
     <WegGlShader :mask-state="maskState">
-      <img src="https://picsum.photos/512" crossorigin="anonymous" />
+      <img src="@/assets/img/image.png" />
     </WegGlShader>
     <HeroContent @hover-change="handleHoverChange" />
+    <div class="w-[300px]">
+      <img src="@/assets/img/image.png" />
+    </div>
   </div>
 </template>
 
